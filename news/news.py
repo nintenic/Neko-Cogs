@@ -34,6 +34,7 @@ class Newsletter:
             dataIO.save_json(self.new, self.news)
             await self.bot.say("You're now setup to recieve our newsletter! You can turn it off by saying `{}newsletter unsubscribe`".format(ctx.prefix))
         else:
+            news = self.news[weeb.id]['send']
             if news is False:
                 self.news[weeb.id]['send'] = True 
                 dataIO.save_json(self.new, self.news)
