@@ -16,7 +16,7 @@ class Newsletter:
         
 
     @commands.group(pass_context=True, invoke_without_command=True)
-    async def newsletter(self, ctx):
+    async def news(self, ctx):
         """Newsletter Commands"""
         
         if ctx.invoked_subcommand is None:
@@ -24,15 +24,15 @@ class Newsletter:
     
 
     @newsletter.command(pass_context=True)
-    async def signup(self, ctx):
-        """Signup for our newsletter."""
+    async def start(self, ctx):
+        """Start recieving newsletters."""
         
         weeb = ctx.message.author
         if weeb.id not in self.news:
             await self.bot.say("Ok {}, please wait a moment while I set things up.".format(weeb.mention))
             self.news[weeb.id] = {'send' : True}
             dataIO.save_json(self.savefile, self.news)
-            await self.bot.say("You're now setup to recieve our newsletter! You can turn it off by saying `{}newsletter unsubscribe`".format(ctx.prefix))
+            await self.bot.say("You're now setup to recieve our newsletter! You can turn it off by saying `{}news stop`".format(ctx.prefix))
         else:
             news = self.news[weeb.id]['send']
             if news is False:
@@ -43,7 +43,7 @@ class Newsletter:
                 await self.bot.say("You're already registered for the newsletter.")
                 
     @newsletter.command(pass_context=True)
-    async def unsubscribe(self, ctx):
+    async def stop(self, ctx):
         """Stop recieving newsletters."""
         
         weeb = ctx.message.author
@@ -56,13 +56,13 @@ class Newsletter:
             else:
                 await self.bot.say("You're already unsubscribed from the newsletter.")
         else:
-            await self.bot.say("{}, you need a newsletter account first. Say `{}newsletter signup` to start.".format(weeb.mention, ctx.prefix))
+            await self.bot.say("{}, you need a newsletter account first. Say `{}news start` to begin.".format(weeb.mention, ctx.prefix))
             
             
     @checks.is_owner()
     @newsletter.command(pass_context=True)
     async def send(self, ctx, *, msg):
-        """Owner Only - sends a newsletter."""
+        """Owner Only - Sends a Newsletter."""
 
         if len(self.news) <= 0:
             await self.bot.say("You can't send a newsletter if no one is registered.")
@@ -73,7 +73,7 @@ class Newsletter:
                 user = self.bot.get_user_info(id)
                 message = "**{} Newsletter!\n\n**".format(self.bot.user.name)
                 message += msg
-                message += "\n\n*If you no longer want to get these notices, just say `{}newsletter unsubscribe`".format(ctx.prefix)
+                message += "\n\n*If you no longer want to get these messages, just say `{}news stop`".format(ctx.prefix)
                 users = discord.utils.get(self.bot.get_all_members(),
                                   id=id)
                 try:
