@@ -44,7 +44,7 @@ class Newsletter:
                 
     @newsletter.command(pass_context=True)
     async def unsubscribe(self, ctx):
-        """Allows you to turn off the your newsletter subscription."""
+        """Stop recieving newsletters."""
         
         weeb = ctx.message.author
         if weeb.id in self.news:
