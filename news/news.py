@@ -31,13 +31,13 @@ class Newsletter:
         if weeb.id not in self.news:
             await self.bot.say("Ok {}, please wait a moment while I set things up.".format(weeb.mention))
             self.news[weeb.id] = {'send' : True}
-            dataIO.save_json(self.new, self.news)
+            dataIO.save_json(self.savefile, self.news)
             await self.bot.say("You're now setup to recieve our newsletter! You can turn it off by saying `{}newsletter unsubscribe`".format(ctx.prefix))
         else:
             news = self.news[weeb.id]['send']
             if news is False:
                 self.news[weeb.id]['send'] = True 
-                dataIO.save_json(self.new, self.news)
+                dataIO.save_json(self.savefile, self.news)
                 await self.bot.say("Great! You will now start recieving newsletters!")
             else :    
                 await self.bot.say("You're already registered for the newsletter.")
@@ -51,7 +51,7 @@ class Newsletter:
             news = self.news[weeb.id]['send']
             if news is True:
                 self.news[weeb.id]['send'] = False 
-                dataIO.save_json(self.new, self.news)
+                dataIO.save_json(self.savefile, self.news)
                 await self.bot.say("Ok, we'll turn off your newsletter subscription.")
             else:
                 await self.bot.say("You're already unsubscribed from the newsletter.")
