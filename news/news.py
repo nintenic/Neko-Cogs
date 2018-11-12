@@ -23,7 +23,7 @@ class News:
             await send_cmd_help(ctx)
     
 
-    @newsletter.command(pass_context=True)
+    @news.command(pass_context=True)
     async def start(self, ctx):
         """Start recieving newsletters."""
         
@@ -42,7 +42,7 @@ class News:
             else :    
                 await self.bot.say("You're already registered for the newsletter.")
                 
-    @newsletter.command(pass_context=True)
+    @news.command(pass_context=True)
     async def stop(self, ctx):
         """Stop recieving newsletters."""
         
@@ -60,7 +60,7 @@ class News:
             
             
     @checks.is_owner()
-    @newsletter.command(pass_context=True)
+    @news.command(pass_context=True)
     async def send(self, ctx, *, msg):
         """Owner Only - Sends a Newsletter."""
 
@@ -104,4 +104,4 @@ def check_files():
 def setup(bot):
     check_folders()
     check_files()
-    bot.add_cog(Newsletter(bot))
+    bot.add_cog(News(bot))
