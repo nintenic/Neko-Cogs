@@ -7,7 +7,7 @@ import os
 import asyncio
 
 class Newsletter:
-    """Allow users to sign up for a newsletter from the owner"""
+    """Allow users to sign up for our newsletter."""
 
     def __init__(self, bot):
         self.bot = bot
@@ -25,39 +25,42 @@ class Newsletter:
 
     @newsletter.command(pass_context=True)
     async def signup(self, ctx):
-        """Signup for our Newsletter"""
+        """Signup for our newsletter."""
         
         weeb = ctx.message.author
         if weeb.id not in self.news:
-            await self.bot.say("Ok, let me set up your acconut for our newsletter!!")
+            await self.bot.say("Ok {}, please wait a moment while I set things up.".format(weeb.mention))
             self.news[weeb.id] = {'send' : True}
             dataIO.save_json(self.new, self.news)
-            await self.bot.say("Congrats, you will now recieve our newsletter! You can turn it off by saying `{}newsletter toggle`".format(ctx.prefix))
+            await self.bot.say("You're now setup to recieve our newsletter! You can turn it off by saying `{}newsletter unsubscribe`".format(ctx.prefix))
         else:
-            await self.bot.say("Sorry, you already have registered for a newsletter acconut?")
- 
+            if news is False:
+                self.news[weeb.id]['send'] = True 
+                dataIO.save_json(self.new, self.news)
+                await self.bot.say("Great! You will now start recieving newsletters!")
+            else :    
+                await self.bot.say("You're already registered for the newsletter.")
+                
     @newsletter.command(pass_context=True)
-    async def toggle(self, ctx):
-        """Allows you to turn on and off the Newsletter whenever you feel like it!"""
+    async def unsubscribe(self, ctx):
+        """Allows you to turn off the your newsletter subscription."""
         
         weeb = ctx.message.author
         if weeb.id in self.news:
             news = self.news[weeb.id]['send']
-            if news is False:
-                self.news[weeb.id]['send'] = True 
-                dataIO.save_json(self.new, self.news)
-                await self.bot.say("Congrats, you will now start recieving newsletter thru pm!")
-            else:
+            if news is True:
                 self.news[weeb.id]['send'] = False 
-                dataIO.save_json(self.new, self.news)
-                await self.bot.say("Congrats, you will now stop recieving newsletter thru pm!")
+                await self.bot.say("Ok, we'll turn off your newsletter subscription.")
+            else:
+                await self.bot.say("You're already unsubscribed from the newsletter.")
         else:
-            await self.bot.say("{}, uou need a newsletter acconut to start receiving the latest info. Say `{}newsletter signup` now!".format(weeb.mention, ctx.prefix))
-
+            await self.bot.say("{}, you need a newsletter account first. Say `{}newsletter signup` to start.".format(weeb.mention, ctx.prefix))
+            
+            
     @checks.is_owner()
     @newsletter.command(pass_context=True)
     async def send(self, ctx, *, msg):
-        """Owner only, sends announcement for people who !!!!"""
+        """Owner Only - sends a newsletter."""
 
         if len(self.news) <= 0:
             await self.bot.say("You can't send a newsletter if no one is registered.")
@@ -68,20 +71,20 @@ class Newsletter:
                 user = self.bot.get_user_info(id)
                 message = "**{} Newsletter!\n\n**".format(self.bot.user.name)
                 message += msg
-                message += "\n\n*You can always disable newsletter by saying `{}newsletter toggle!`*".format(ctx.prefix)
+                message += "\n\n*If you no longer want to get these notices, just say `{}newsletter unsubscribe`".format(ctx.prefix)
                 users = discord.utils.get(self.bot.get_all_members(),
                                   id=id)
                 try:
                     await self.bot.send_message(users, message)
                     
                 except:
-                    await self.bot.say("The message didn't go thru you `Fox News has edited this word out due to censorship, we apologize` owner! :angry:")
+                    await self.bot.say("The message didn't go thru :angry:")
                 
                 asyncio.sleep(1)
             else:
                 pass
         else:
-            await self.bot.say("Newsletter has all been sent out to everyone who wanted it!")
+            await self.bot.say("Newsletter has been sent out!")
 
 def check_folders():
     if not os.path.exists("data/news"):
