@@ -52,7 +52,7 @@ class News:
             if news is True:
                 self.data[weeb.id]['send'] = False 
                 dataIO.save_json(self.savefile, self.data)
-                await self.bot.say("Ok, we'll turn off your newsletter subscription.")
+                await self.bot.say("Ok, your subscription is stopped. Say `{}news start` to turn it on again.".format(weeb.mention, ctx.prefix))
             else:
                 await self.bot.say("You're already unsubscribed from the newsletter.")
         else:
