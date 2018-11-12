@@ -6,13 +6,13 @@ from __main__ import send_cmd_help
 import os
 import asyncio
 
-class Newsletter:
-    """Allow users to sign up for our newsletter."""
+class News:
+    """Allow users to signup for news."""
 
     def __init__(self, bot):
         self.bot = bot
         self.savefile = "data/news/registered.json"
-        self.news = dataIO.load_json(self.savefile)
+        self.data = dataIO.load_json(self.savefile)
         
 
     @commands.group(pass_context=True, invoke_without_command=True)
@@ -28,16 +28,16 @@ class Newsletter:
         """Start recieving newsletters."""
         
         weeb = ctx.message.author
-        if weeb.id not in self.news:
+        if weeb.id not in self.data:
             await self.bot.say("Ok {}, please wait a moment while I set things up.".format(weeb.mention))
-            self.news[weeb.id] = {'send' : True}
-            dataIO.save_json(self.savefile, self.news)
+            self.data[weeb.id] = {'send' : True}
+            dataIO.save_json(self.savefile, self.data)
             await self.bot.say("You're now setup to recieve our newsletter! You can turn it off by saying `{}news stop`".format(ctx.prefix))
         else:
-            news = self.news[weeb.id]['send']
+            news = self.data[weeb.id]['send']
             if news is False:
-                self.news[weeb.id]['send'] = True 
-                dataIO.save_json(self.savefile, self.news)
+                self.data[weeb.id]['send'] = True 
+                dataIO.save_json(self.savefile, self.data)
                 await self.bot.say("Great! You will now start recieving newsletters!")
             else :    
                 await self.bot.say("You're already registered for the newsletter.")
@@ -47,11 +47,11 @@ class Newsletter:
         """Stop recieving newsletters."""
         
         weeb = ctx.message.author
-        if weeb.id in self.news:
-            news = self.news[weeb.id]['send']
+        if weeb.id in self.data:
+            news = self.data[weeb.id]['send']
             if news is True:
-                self.news[weeb.id]['send'] = False 
-                dataIO.save_json(self.savefile, self.news)
+                self.data[weeb.id]['send'] = False 
+                dataIO.save_json(self.savefile, self.data)
                 await self.bot.say("Ok, we'll turn off your newsletter subscription.")
             else:
                 await self.bot.say("You're already unsubscribed from the newsletter.")
@@ -64,12 +64,12 @@ class Newsletter:
     async def send(self, ctx, *, msg):
         """Owner Only - Sends a Newsletter."""
 
-        if len(self.news) <= 0:
+        if len(self.data) <= 0:
             await self.bot.say("You can't send a newsletter if no one is registered.")
             return
         
-        for id in self.news:
-            if self.news[id]['send']: 
+        for id in self.data:
+            if self.data[id]['send']: 
                 user = self.bot.get_user_info(id)
                 message = "**{} Newsletter!\n\n**".format(self.bot.user.name)
                 message += msg
