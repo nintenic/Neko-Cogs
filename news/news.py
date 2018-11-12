@@ -11,8 +11,8 @@ class Newsletter:
 
     def __init__(self, bot):
         self.bot = bot
-        self.new = "data/news/registered.json"
-        self.news = dataIO.load_json(self.new)
+        self.savefile = "data/news/registered.json"
+        self.news = dataIO.load_json(self.savefile)
         
 
     @commands.group(pass_context=True, invoke_without_command=True)
@@ -50,6 +50,7 @@ class Newsletter:
             news = self.news[weeb.id]['send']
             if news is True:
                 self.news[weeb.id]['send'] = False 
+                dataIO.save_json(self.new, self.news)
                 await self.bot.say("Ok, we'll turn off your newsletter subscription.")
             else:
                 await self.bot.say("You're already unsubscribed from the newsletter.")
